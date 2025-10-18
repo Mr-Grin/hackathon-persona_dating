@@ -8,6 +8,7 @@ interface DashboardProps {
   persona: PersonaProfile;
   otherUsers: OtherUser[];
   matches: Match[];
+  conversations: Record<string, ChatMessage[]>;
 }
 
 const MatchCard: React.FC<{ match: Match, onSelect: (match: Match) => void }> = ({ match, onSelect }) => (
@@ -21,18 +22,26 @@ const MatchCard: React.FC<{ match: Match, onSelect: (match: Match) => void }> = 
     </div>
 );
 
-const PotentialMatchCard: React.FC<{ user: OtherUser }> = ({ user }) => (
-    <div className="bg-slate-800 p-4 rounded-xl flex items-center gap-4 border border-slate-700 opacity-60">
-        <img src={user.avatarUrl} alt={user.name} className="w-16 h-16 rounded-full object-cover" />
-        <div>
-            <h3 className="font-bold text-lg">{user.name}, {user.age}</h3>
-            <p className="text-sm text-slate-400">Your persona is chatting...</p>
+const PotentialMatchCard: React.FC<{ user: OtherUser; lastMessage?: ChatMessage }> = ({ user, lastMessage }) => {
+    const messageText = lastMessage ? lastMessage.text : "Your persona is starting a chat...";
+    const speaker = lastMessage?.sender === 'user' ? "You:" : `${user.name}:`;
+
+    return (
+        <div className="bg-slate-800 p-4 rounded-xl flex items-center gap-4 border border-slate-700 opacity-60">
+            <img src={user.avatarUrl} alt={user.name} className="w-16 h-16 rounded-full object-cover" />
+            <div>
+                <h3 className="font-bold text-lg">{user.name}, {user.age}</h3>
+                <p className="text-sm text-slate-400 italic truncate">
+                    {lastMessage && <span className="font-semibold text-slate-300">{speaker} </span>}
+                    {messageText}
+                </p>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 
-const Dashboard: React.FC<DashboardProps> = ({ persona, otherUsers, matches }) => {
+const Dashboard: React.FC<DashboardProps> = ({ persona, otherUsers, matches, conversations }) => {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
   const potentialUsers = otherUsers.filter(u => !matches.some(m => m.otherUser.id === u.id));
@@ -69,11 +78,15 @@ const Dashboard: React.FC<DashboardProps> = ({ persona, otherUsers, matches }) =
             <h2 className="text-2xl font-bold mb-4">In Conversation...</h2>
              {potentialUsers.length > 0 ? (
                 <div className="space-y-4">
-                    {potentialUsers.map(user => <PotentialMatchCard key={user.id} user={user} />)}
+                    {potentialUsers.map(user => {
+                        const conversation = conversations[user.id] || [];
+                        const lastMessage = conversation[conversation.length - 1];
+                        return <PotentialMatchCard key={user.id} user={user} lastMessage={lastMessage} />;
+                    })}
                 </div>
              ) : (
                 <div className="text-center py-8 bg-slate-800/50 rounded-2xl border border-slate-700">
-                    <p className="text-slate-400">No new conversations right now.</p>
+                    <p className="text-slate-400">All potential conversations have been explored.</p>
                 </div>
              )}
         </div>

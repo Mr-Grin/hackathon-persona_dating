@@ -1,8 +1,16 @@
 
+export interface ImageAnalysis {
+  fashionSense: string;
+  potentialInterests: string[];
+  vibe: string;
+  summary: string;
+}
+
 export interface PersonaProfile {
   name: string;
   age: number;
-  imageAnalysis: string;
+  imageAnalysis: string; // The summary paragraph from the analysis
+  structuredImageAnalysis: ImageAnalysis;
   quizAnswers: Record<string, string>;
   bio: string;
   finalPersona: string;
