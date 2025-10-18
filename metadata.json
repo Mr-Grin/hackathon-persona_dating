@@ -1,0 +1,5 @@
+{
+  "name": "AI Persona Dating",
+  "description": "A dating app where an AI persona, created from your photos and preferences, chats with other AI personas to find you the perfect match and arrange dates on your behalf.",
+  "requestFramePermissions": []
+}
