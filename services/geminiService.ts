@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, GenerateContentResponse, Type } from '@google/genai';
 import type { PersonaProfile, ChatMessage, OtherUser, ImageAnalysis } from '../types';
 import { questionnaireQuestions } from '../constants';
@@ -131,8 +132,8 @@ export const simulateChatTurn = async (
     }).join('\n');
 
     const prompt = `
-      You are an AI persona for a dating app. Your goal is to chat with another AI persona to see if your users would be a good match.
-      You are role-playing as **${myPersona.name}**.
+      You are role-playing as **${myPersona.name}** in a dating app chat. Your personality and background are described below. Your goal is to chat with **${otherUser.name}** to see if you two are a good match for a real-life date. 
+      Speak in the first person, as if you are **${myPersona.name}**. Do not refer to a "user" or mention that you are an AI. Be natural and authentic.
 
       **Your Persona (${myPersona.name}, ${myPersona.age}):**
       "${myPersona.finalPersona}"
@@ -167,8 +168,8 @@ export const getOtherUserResponse = async (
     }).join('\n');
 
     const prompt = `
-      You are an AI persona for a dating app. Your goal is to chat with another AI persona to see if your users would be a good match.
-      You are role-playing as **${otherUser.name}**.
+      You are role-playing as **${otherUser.name}** in a dating app chat. Your personality and background are described below. Your goal is to chat with **${myPersona.name}** to see if you two are a good match for a real-life date. 
+      Speak in the first person, as if you are **${otherUser.name}**. Do not refer to a "user" or mention that you are an AI. Be natural and authentic.
 
       **Your Persona (${otherUser.name}, ${otherUser.age}):**
       "${otherUser.persona}"
@@ -212,7 +213,7 @@ export const decideOnMatch = async (myPersona: PersonaProfile, otherUser: OtherU
 
         **Your Task:**
         1. Analyze the conversation for compatibility, shared interests, and positive rapport.
-        2. Decide if they should be matched for a date.
+        2. Decide if they should be matched for a date. Be selective and picky. Only recommend a match if you see strong evidence of compatibility in their core values or interests, and a genuine, positive rapport in their chat. A simple, polite conversation is not enough. It's better to decline a match than to recommend a mediocre one.
         3. If they should be matched, create a short (1-sentence) reason for the match.
         4. Also, propose a creative and relevant first date idea (e.g., "Saturday at 3 PM at 'The Artisan Coffee Shop'").
 

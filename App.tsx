@@ -74,22 +74,17 @@ const App: React.FC = () => {
     if (!currentPersona) return;
 
     const potentialUsers = currentOtherUsers.filter(u => !currentMatches.some(m => m.otherUser.id === u.id));
-    if (potentialUsers.length === 0) {
-      setIsSimulating(false);
-      return;
-    }
+    
+    // Find the next user to have a conversation with
+    const targetUser = potentialUsers.find(u => (currentConversations[u.id] || []).length < 6);
 
-    const targetUser = potentialUsers.find(u => (currentConversations[u.id] || []).length < 6) || potentialUsers[0];
     if (!targetUser) {
+        // No more users to talk to, or all conversations are maxed out. Stop the simulation.
         setIsSimulating(false);
         return;
     }
-
+    
     const conversationHistory = currentConversations[targetUser.id] || [];
-
-    if (conversationHistory.length >= 6) {
-        return;
-    }
 
     const lastMessage = conversationHistory[conversationHistory.length - 1];
     const isMyTurn = !lastMessage || lastMessage.sender === 'other';
